@@ -46,6 +46,7 @@ const dbConnect = async () => {
 dbConnect();
 
 const petCollection = client.db('petDB').collection('pets');
+const donationCollection = client.db('petDB').collection('donations');
 // const borrowBooksCollection = client.db('bookLibrary').collection('borrowBooks');
 
 
@@ -95,6 +96,41 @@ app.get('/pets/:id', async (req, res) => {
   }
 })
 
+// donation data
+
+app.get('/donations', async (req, res) => {
+  try {
+    const cursor = donationCollection.find();
+    const result = await cursor.toArray();
+    res.send(result);
+  }
+  catch (error) {
+    console.log(error)
+  }
+
+})
+app.get('/donations/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await donationCollection.findOne(query);
+    res.send(result)
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+app.post('/donations', async (req, res) => {
+  try {
+    const newPet = req.body;
+    console.log(newPet);
+    const result = await donationCollection.insertOne(newPet);
+    res.send(result);
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
 
 app.listen(port, () => {
   console.log(`pet shop listening on port ${port}`)
